@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Common.Models;
 using Infra.EfCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infra.AspNetCoreIdentity
 {
@@ -18,9 +19,26 @@ namespace Infra.AspNetCoreIdentity
         }
         public IQueryable<User> Users => _projectDbContext.Users;
 
-        public Task<IdentityResult> CreateAsync(User user, CancellationToken cancellationToken)
+        public async Task<IdentityResult> CreateAsync(User user, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            IdentityResult result;
+            try
+            {
+                await _projectDbContext.Users.AddAsync(user, cancellationToken);
+
+                await _projectDbContext.SaveChangesAsync(cancellationToken);
+                result=IdentityResult.Success;
+            }
+            catch (Exception e)
+            {
+                var error= new IdentityError()
+                {
+                    Description = e.Message,
+                };
+                result=IdentityResult.Failed(error);
+            }
+
+            return result;
         }
 
         public Task<IdentityResult> DeleteAsync(User user, CancellationToken cancellationToken)
@@ -30,7 +48,7 @@ namespace Infra.AspNetCoreIdentity
 
         public void Dispose()
         {
-            
+
         }
 
         public Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
@@ -38,9 +56,11 @@ namespace Infra.AspNetCoreIdentity
             throw new NotImplementedException();
         }
 
-        public Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
+        public async Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var user = await _projectDbContext.Users.SingleOrDefaultAsync(usr =>
+                usr.Id == normalizedUserName, cancellationToken: cancellationToken);
+            return user;
         }
 
         public Task<string> GetNormalizedUserNameAsync(User user, CancellationToken cancellationToken)
@@ -55,12 +75,13 @@ namespace Infra.AspNetCoreIdentity
 
         public Task<string> GetUserNameAsync(User user, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(user.Id);
         }
 
         public Task SetNormalizedUserNameAsync(User user, string normalizedName, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            user.Id = normalizedName;
+            return Task.CompletedTask;
         }
 
         public Task SetUserNameAsync(User user, string userName, CancellationToken cancellationToken)

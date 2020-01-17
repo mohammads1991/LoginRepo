@@ -15,7 +15,7 @@ namespace Infra.EfCore
             var connection= new SqlConnectionStringBuilder()
             {
                 DataSource = "KING-VAIO",
-                InitialCatalog = "AmaProject",
+                InitialCatalog = "Website",
                 IntegratedSecurity =true,
             };
 
