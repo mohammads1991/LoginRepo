@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.EfCore", "Infra.EfCor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{4A43F14C-EB65-4840-BEE7-8C678DD9198C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebsiteHttp", "WebsiteHttp\WebsiteHttp.csproj", "{5E331098-4A61-4014-85F1-DFD7C810B674}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebsiteHttp", "WebsiteHttp\WebsiteHttp.csproj", "{5E331098-4A61-4014-85F1-DFD7C810B674}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
