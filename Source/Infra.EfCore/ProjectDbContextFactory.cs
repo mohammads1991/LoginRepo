@@ -7,14 +7,14 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Infra.EfCore
 {
-    class ProjectDbContextFactory:IDesignTimeDbContextFactory<ProjectDbContext>
+    public class ProjectDbContextFactory:IDesignTimeDbContextFactory<ProjectDbContext>
     {
-        public ProjectDbContext CreateDbContext(string[] args)
+        public static ProjectDbContext CreateDbContext()
         {
             var optionBuilder = new DbContextOptionsBuilder<ProjectDbContext>();
             var connection= new SqlConnectionStringBuilder()
             {
-                DataSource = "(localdb)",
+                DataSource = "KING-VAIO",
                 InitialCatalog = "AmaProject",
                 IntegratedSecurity =true,
             };
@@ -24,6 +24,11 @@ namespace Infra.EfCore
 
 
 
+        }
+
+        public ProjectDbContext CreateDbContext(string[] args)
+        {
+            return CreateDbContext();
         }
     }
 }

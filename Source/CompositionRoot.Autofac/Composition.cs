@@ -1,6 +1,7 @@
 ﻿using System;
 using Autofac;
 using Infra.AspNetCoreIdentity;
+using Infra.EfCore;
 
 namespace CompositionRoot.Autofac
 {
@@ -12,7 +13,9 @@ namespace CompositionRoot.Autofac
             builder.RegisterType<ProjectUserStore>()
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
-
+            builder.Register(r => ProjectDbContextFactory.CreateDbContext())
+                .As<ProjectDbContext>()
+                .InstancePerLifetimeScope();
         }
     }
 }

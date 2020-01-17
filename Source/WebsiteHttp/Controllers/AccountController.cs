@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Common.Models;
 using Microsoft.AspNetCore.Identity;
@@ -22,26 +23,43 @@ namespace WebsiteHttp.Controllers
             return View();
         }
 
-        public IActionResult RegisterUser(UserRegisterViewModel model)
+        public async Task<IActionResult> RegisterUser(UserRegisterViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View("Index", model);
             }
 
-            if (CheckedUserExist(model.UserName))
+            var errors = await AddUSerAsync(model);
+
+            if (!string.IsNullOrEmpty(errors))
             {
-                ModelState.AddModelError("",$"this user :{model.UserName} exist");
+                ModelState.AddModelError("",errors);
                 return View("Index", model);
             }
 
-
-            return View();
+            return RedirectToAction("Index","Home");
         }
 
-        private bool CheckedUserExist(string userName)
+       
+
+        private async Task<string> AddUSerAsync(UserRegisterViewModel model)
         {
-            return _userManager.Users.Any(usr => usr.Id == userName);
+            var user=new User()
+            {
+                Id = model.UserName,
+                Password = model.Password
+            };
+           var result=await _userManager.CreateAsync(user);
+           var errorBuilder = result.Errors.Aggregate(new StringBuilder(), (seed, error) =>
+           {
+               seed.Append((error.Description + Environment.NewLine));
+               return seed;
+           });
+
+           return errorBuilder.ToString();
+
         }
     }
+
 }

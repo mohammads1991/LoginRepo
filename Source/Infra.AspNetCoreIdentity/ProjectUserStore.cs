@@ -10,7 +10,7 @@ namespace Infra.AspNetCoreIdentity
 {
     public class ProjectUserStore : IQueryableUserStore<User>
     {
-        private ProjectDbContext _projectDbContext;
+        private readonly ProjectDbContext _projectDbContext;
 
         public ProjectUserStore(ProjectDbContext projectDbContext)
         {
@@ -30,7 +30,7 @@ namespace Infra.AspNetCoreIdentity
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            
         }
 
         public Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
