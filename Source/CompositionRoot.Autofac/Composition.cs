@@ -16,6 +16,9 @@ namespace CompositionRoot.Autofac
             builder.Register(r => ProjectDbContextFactory.CreateDbContext())
                 .As<ProjectDbContext>()
                 .InstancePerLifetimeScope();
+            builder.RegisterType<ProjectRoleStore>()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
         }
     }
 }

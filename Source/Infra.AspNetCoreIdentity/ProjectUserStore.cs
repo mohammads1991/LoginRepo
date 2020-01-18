@@ -9,13 +9,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infra.AspNetCoreIdentity
 {
-    public class ProjectUserStore : IQueryableUserStore<User>
+    public class ProjectUserStore : IQueryableUserStore<User>,IUserPasswordStore<User>
     {
         private readonly ProjectDbContext _projectDbContext;
+        private readonly IPasswordHasher<User> _passwordHasher;
 
-        public ProjectUserStore(ProjectDbContext projectDbContext)
+        public ProjectUserStore(ProjectDbContext projectDbContext,IPasswordHasher<User> passwordHasher)
         {
             _projectDbContext = projectDbContext;
+            _passwordHasher = passwordHasher;
         }
         public IQueryable<User> Users => _projectDbContext.Users;
 
@@ -24,6 +26,9 @@ namespace Infra.AspNetCoreIdentity
             IdentityResult result;
             try
             {
+                var passHash = _passwordHasher.HashPassword(user, user.Password);
+                await SetPasswordHashAsync(user, passHash, cancellationToken);
+
                 await _projectDbContext.Users.AddAsync(user, cancellationToken);
 
                 await _projectDbContext.SaveChangesAsync(cancellationToken);
@@ -51,9 +56,10 @@ namespace Infra.AspNetCoreIdentity
 
         }
 
-        public Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
+        public async Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var user = await _projectDbContext.Users.SingleOrDefaultAsync(usr => usr.Id == userId, cancellationToken);
+            return await Task.FromResult(user);
         }
 
         public async Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
@@ -68,9 +74,15 @@ namespace Infra.AspNetCoreIdentity
             throw new NotImplementedException();
         }
 
+        public Task<string> GetPasswordHashAsync(User user, CancellationToken cancellationToken)
+        {
+            
+            return Task.FromResult(user.Password);
+        }
+
         public Task<string> GetUserIdAsync(User user, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(user.Id);
         }
 
         public Task<string> GetUserNameAsync(User user, CancellationToken cancellationToken)
@@ -78,9 +90,20 @@ namespace Infra.AspNetCoreIdentity
             return Task.FromResult(user.Id);
         }
 
+        public Task<bool> HasPasswordAsync(User user, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task SetNormalizedUserNameAsync(User user, string normalizedName, CancellationToken cancellationToken)
         {
             user.Id = normalizedName;
+            return Task.CompletedTask;
+        }
+
+        public Task SetPasswordHashAsync(User user, string passwordHash, CancellationToken cancellationToken)
+        {
+            user.Password = passwordHash;
             return Task.CompletedTask;
         }
 
