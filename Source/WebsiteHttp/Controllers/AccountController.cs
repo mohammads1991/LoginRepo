@@ -50,7 +50,7 @@ namespace WebsiteHttp.Controllers
                 Id = model.UserName,
                 Password = model.Password
             };
-           var result=await _userManager.CreateAsync(user);
+           var result=await _userManager.CreateAsync(user,user.Password);
            var errorBuilder = result.Errors.Aggregate(new StringBuilder(), (seed, error) =>
            {
                seed.Append((error.Description + Environment.NewLine));

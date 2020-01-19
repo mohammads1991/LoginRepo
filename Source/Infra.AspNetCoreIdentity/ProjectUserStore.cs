@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,12 +13,10 @@ namespace Infra.AspNetCoreIdentity
     public class ProjectUserStore : IQueryableUserStore<User>,IUserPasswordStore<User>
     {
         private readonly ProjectDbContext _projectDbContext;
-        private readonly IPasswordHasher<User> _passwordHasher;
-
-        public ProjectUserStore(ProjectDbContext projectDbContext,IPasswordHasher<User> passwordHasher)
+        
+        public ProjectUserStore(ProjectDbContext projectDbContext)
         {
             _projectDbContext = projectDbContext;
-            _passwordHasher = passwordHasher;
         }
         public IQueryable<User> Users => _projectDbContext.Users;
 
@@ -26,9 +25,6 @@ namespace Infra.AspNetCoreIdentity
             IdentityResult result;
             try
             {
-                var passHash = _passwordHasher.HashPassword(user, user.Password);
-                await SetPasswordHashAsync(user, passHash, cancellationToken);
-
                 await _projectDbContext.Users.AddAsync(user, cancellationToken);
 
                 await _projectDbContext.SaveChangesAsync(cancellationToken);

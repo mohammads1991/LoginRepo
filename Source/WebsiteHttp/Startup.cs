@@ -8,9 +8,11 @@ using CompositionRoot.Autofac;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WebsiteHttp.Validators;
 
 namespace WebsiteHttp
 {
@@ -33,7 +35,13 @@ namespace WebsiteHttp
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            //services.Configure<IdentityOptions>(options => { options.Password.RequiredLength = 8; });
+
+
             services.AddIdentity<User, Role>();
+                //.AddPasswordValidator<PasswordValidator>();
+
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -58,7 +66,7 @@ namespace WebsiteHttp
 
             app.UseStaticFiles();
             app.UseCookiePolicy();
-
+            app.UseAuthentication();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
