@@ -8,7 +8,6 @@ namespace WebsiteHttp.Models
 {
     public class UserRegisterViewModel
     {
-        [Required]
         public string UserName { get; set; }
         [Required,DataType(DataType.Password)]
         public string Password { get; set; }
