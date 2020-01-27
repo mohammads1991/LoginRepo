@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infra.AspNetCoreIdentity
 {
-    public class ProjectUserStore : IQueryableUserStore<User>,IUserPasswordStore<User>
+    public class ProjectUserStore : IQueryableUserStore<User>,IUserPasswordStore<User>,IUserTwoFactorTokenProvider<User>
     {
         private readonly ProjectDbContext _projectDbContext;
         
@@ -19,6 +19,11 @@ namespace Infra.AspNetCoreIdentity
             _projectDbContext = projectDbContext;
         }
         public IQueryable<User> Users => _projectDbContext.Users;
+
+        public Task<bool> CanGenerateTwoFactorTokenAsync(UserManager<User> manager, User user)
+        {
+            throw new NotImplementedException();
+        }
 
         public async Task<IdentityResult> CreateAsync(User user, CancellationToken cancellationToken)
         {
@@ -65,6 +70,11 @@ namespace Infra.AspNetCoreIdentity
             return user;
         }
 
+        public Task<string> GenerateAsync(string purpose, UserManager<User> manager, User user)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<string> GetNormalizedUserNameAsync(User user, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
@@ -88,7 +98,7 @@ namespace Infra.AspNetCoreIdentity
 
         public Task<bool> HasPasswordAsync(User user, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return Task.FromResult<bool>(true);
         }
 
         public Task SetNormalizedUserNameAsync(User user, string normalizedName, CancellationToken cancellationToken)
@@ -109,6 +119,11 @@ namespace Infra.AspNetCoreIdentity
         }
 
         public Task<IdentityResult> UpdateAsync(User user, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> ValidateAsync(string purpose, string token, UserManager<User> manager, User user)
         {
             throw new NotImplementedException();
         }
