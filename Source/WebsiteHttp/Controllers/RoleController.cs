@@ -6,6 +6,7 @@ using Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using WebsiteHttp.Models;
 
 namespace WebsiteHttp.Controllers
@@ -50,7 +51,7 @@ namespace WebsiteHttp.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult AssignUsers()
+        public IActionResult AssignUsers(UserToRoleViewModel model)
         {
             var roles = _roleManager.Roles.ToList();
             var users = _userManager.Users.ToList();
@@ -65,21 +66,22 @@ namespace WebsiteHttp.Controllers
 
             if (!ModelState.IsValid)
             {
-                return View("AssignUsers", model);
+                return RedirectToAction("AssignUsers",model);
             }
 
             var role =await _roleManager.FindByIdAsync(model.RoleName);
             if (role==null)
             {
                 ModelState.AddModelError("",$"this role : {model.RoleName} is not valid");
-                return View("AssignUsers", model);
+
+                return RedirectToAction("AssignUsers",model);
             }
 
             var user =await _userManager.FindByIdAsync(model.UserName);
             if (user==null)
             {
                 ModelState.AddModelError("",$"this user : {model.RoleName} is not valid");
-                return View("AssignUsers", model); 
+                return RedirectToAction("AssignUsers",model);
             }
 
             role.Users.Add(user);

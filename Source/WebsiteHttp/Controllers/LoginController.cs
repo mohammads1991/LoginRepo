@@ -54,6 +54,11 @@ namespace WebsiteHttp.Controllers
                 return View("Index", model);
             }
 
+            if (!_userManager.IsEmailConfirmedAsync(user).Result)
+            {
+                ModelState.AddModelError("","email is not confirmed!");
+                return View("Index",model);
+            }
             
             var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, true, false);
 

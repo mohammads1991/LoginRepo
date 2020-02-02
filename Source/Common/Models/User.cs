@@ -9,6 +9,9 @@ namespace Common.Models
         
         public string Id { get; set; }
         public string Password { get; set; }
+        public ICollection<AppClaim> Claims { get; set; }
+        
+        
 
     }
 }

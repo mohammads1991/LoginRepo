@@ -9,6 +9,8 @@ namespace Infra.EfCore
 
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<AppClaim> Claims { get; set; }
+        
 
         public ProjectDbContext(DbContextOptions options)
             :base(options)

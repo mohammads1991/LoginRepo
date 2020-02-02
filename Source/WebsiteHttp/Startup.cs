@@ -6,6 +6,7 @@ using Autofac;
 using Common.Models;
 using CompositionRoot.Autofac;
 using Infra.AspNetCoreIdentity;
+using Infra.EfCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -27,9 +28,21 @@ namespace WebsiteHttp
 
         public IConfiguration Configuration { get; }
 
+        public Startup(IHostingEnvironment env)
+        {
+            var builder = new ConfigurationBuilder();
+            builder.SetBasePath(env.ContentRootPath);
+            builder.AddJsonFile("appsettings.json");
+            Configuration = builder.Build();
+        }
+
+
+
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -39,14 +52,16 @@ namespace WebsiteHttp
 
             //services.Configure<IdentityOptions>(options =>
             //{
+                
             //    options.Password.RequiredLength = 8;
 
             //});
 
-            
+
 
             services.AddIdentity<User, Role>()
                 .AddDefaultTokenProviders();
+            
             //.AddPasswordValidator<PasswordValidator>();
 
 
